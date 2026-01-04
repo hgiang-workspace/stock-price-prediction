@@ -27,7 +27,7 @@ def fit_ar(y, p):
 
     for i in range(p, len(y)):
         row = y[i - p:i][::-1]
-        X.append(np.concatenate(([1], row)))  # bias term
+        X.append(np.concatenate(([1], row)))  
 
     X = np.asarray(X)
 
@@ -72,7 +72,7 @@ def predict_ma_step(errors, theta):
     return np.dot(theta, errors[-q:][::-1])
 
 
-# ARIMA CHUẨN
+# ARIMA 
 def ARIMA(series, p, d, q, steps):
 
     series = np.array(series)
@@ -83,7 +83,7 @@ def ARIMA(series, p, d, q, steps):
     # FIT AR
     ar_coef = fit_ar(diff, p)
 
-    # fitted to get residuals (for MA training)
+    # fitted to get residuals 
     fitted = []
     for i in range(p, len(diff)):
         x = np.concatenate(([1], diff[i-p:i][::-1]))
@@ -97,7 +97,7 @@ def ARIMA(series, p, d, q, steps):
     else:
         theta = []
 
-    # ROLLING FORECAST CHUẨN
+    # ROLLING FORECAST 
     history = list(diff)
     errors = list(residuals)
     diff_predictions = []
@@ -113,10 +113,10 @@ def ARIMA(series, p, d, q, steps):
         history.append(yhat)
 
         # error UNKNOWN trong tương lai
-        # chuẩn ARIMA: giả định error = 0
+        # giả định error = 0
         errors.append(0)
 
-    # INVERSE DIFFERENCE CHUẨN
+    # INVERSE DIFFERENCE 
     last_real_value = series[-1]
     forecast = inverse_difference(last_real_value, diff_predictions)
 

@@ -8,22 +8,6 @@ def download_market_index(
     end_date: str,
     output_dir: str = "data/raw/market_indices"
 ):
-    """
-    Download market index data from Yahoo Finance.
-
-    Parameters
-    ----------
-    index_symbol : str
-        Yahoo Finance symbol (e.g., '^VIX', '^IXIC')
-    index_name : str
-        Column name for index
-    start_date : str
-        Start date (YYYY-MM-DD)
-    end_date : str
-        End date (YYYY-MM-DD)
-    output_dir : str
-        Directory to save CSV file
-    """
 
     os.makedirs(output_dir, exist_ok=True)
 

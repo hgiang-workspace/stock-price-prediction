@@ -79,7 +79,7 @@ class StackingEnsemble:
             arima_series = train_df["Adj Close"].values
             arima_pred = ARIMA(
                 arima_series,
-                p=5, d=1, q=1,
+                p=2, d=1, q=1,
                 steps=len(test_df)
             )
             print(f"Trained ARIMA for year {year}")

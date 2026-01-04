@@ -7,7 +7,6 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-# === IMPORT SRC MODULES ===
 import sys
 import os
 sys.path.append(os.getcwd())
@@ -50,10 +49,10 @@ class StockPredictionApp:
         
         self.tabControl.pack(expand=1, fill="both")
         
-        # === SETUP HOME TAB ===
+        # SETUP HOME TAB
         self.setup_home_tab()
-        self.setup_prediction_tab() # Implemented
-        self.setup_comparison_tab() # Placeholder
+        self.setup_prediction_tab()
+        self.setup_comparison_tab()
 
     def log(self, message):
         timestamp = datetime.now().strftime("%H:%M:%S")
@@ -61,12 +60,11 @@ class StockPredictionApp:
         self.log_area.see(tk.END)
 
     def setup_home_tab(self):
-        # Grid Layout: Left Panel (Controls) | Right Panel (Chart & Results)
         self.tab_home.columnconfigure(0, weight=1)
         self.tab_home.columnconfigure(1, weight=3)
         self.tab_home.rowconfigure(0, weight=1)
         
-        # === LEFT PANEL ===
+        # LEFT PANEL
         left_frame = ttk.Frame(self.tab_home, padding="10")
         left_frame.grid(row=0, column=0, sticky="nsew")
         
@@ -109,7 +107,7 @@ class StockPredictionApp:
         self.btn_predict = ttk.Button(left_frame, text="2. TRAIN & PREDICT", command=self.predict_thread, state="disabled")
         self.btn_predict.pack(fill="x", pady=5, ipady=5)
         
-        # === RIGHT PANEL ===
+        # RIGHT PANEL
         right_frame = ttk.Frame(self.tab_home, padding="10")
         right_frame.grid(row=0, column=1, sticky="nsew")
         
@@ -137,11 +135,10 @@ class StockPredictionApp:
         self.canvas.get_tk_widget().pack(fill="both", expand=True)
 
     def setup_prediction_tab(self):
-        # Paned Window
         paned = ttk.PanedWindow(self.tab_prediction, orient=tk.HORIZONTAL)
         paned.pack(fill="both", expand=True, padx=5, pady=5)
         
-        # === LEFT PANE (Controls) ===
+        # LEFT PANE (Controls)
         left_pane = ttk.Frame(paned, padding="5")
         paned.add(left_pane, weight=1)
         
@@ -177,16 +174,14 @@ class StockPredictionApp:
             
         self.metrics_tree.pack(fill="x")
 
-        # === RIGHT PANE (Details) ===
+        # RIGHT PANE (Details)
         right_pane = ttk.Frame(paned, padding="5")
         paned.add(right_pane, weight=3)
         
-        # Top: Source Code
         ttk.Label(right_pane, text="Model Source Code:").pack(anchor="w")
         self.source_code_area = scrolledtext.ScrolledText(right_pane, height=15, font=("Consolas", 10))
         self.source_code_area.pack(fill="x", pady=5)
         
-        # Bottom: Chart
         ttk.Label(right_pane, text="Single Model Prediction:").pack(anchor="w", pady=(10,0))
         self.chart_frame_single = ttk.Frame(right_pane, borderwidth=2, relief="sunken")
         self.chart_frame_single.pack(expand=True, fill="both")
@@ -268,10 +263,9 @@ class StockPredictionApp:
                 y_pred = model.predict(X_test)
                 
             elif model_name == "ARIMA":
-                # ARIMA needs time series, not X features
                 train_ts = train_val_df["Adj Close"].values
                 model = ARIMA(train_ts, p=5, d=1, q=1, steps=len(test_df))
-                y_pred = model # ARIMA implementation returns predictions directly
+                y_pred = model 
                 
             # Evaluate
             metrics = compute_regression_metrics(y_test, y_pred)
@@ -293,8 +287,7 @@ class StockPredictionApp:
         self.metrics_tree.insert("", "end", values=formatted_vals)
         
         # Update Chart
-        test_start_pos = len(original_dates) - len(test_df) # Estimate pos
-        # Better logic: Use indices
+        test_start_pos = len(original_dates) - len(test_df)
         test_dates = original_dates[-len(test_df):]
         
         self.ax_single.clear()
@@ -310,16 +303,12 @@ class StockPredictionApp:
         messagebox.showinfo("Success", f"Trained {self.model_var.get()} successfully!")
 
     def setup_comparison_tab(self):
-        # Layout: Top (Button) | Middle (Table) | Bottom (Chart)
-        
-        # 1. Top Frame: Button
         top_frame = ttk.Frame(self.tab_comparison, padding="10")
         top_frame.pack(fill="x")
         
         self.btn_compare = ttk.Button(top_frame, text="RUN FULL COMPARISON (5 Models)", command=self.run_comparison_thread)
         self.btn_compare.pack(fill="x", ipady=10)
         
-        # 2. Middle Frame: Metrics Table
         middle_frame = ttk.Frame(self.tab_comparison, padding="10")
         middle_frame.pack(fill="x")
         
@@ -336,7 +325,6 @@ class StockPredictionApp:
             
         self.comp_tree.pack(fill="x", pady=5)
         
-        # 3. Bottom Frame: Chart
         bottom_frame = ttk.Frame(self.tab_comparison, padding="10")
         bottom_frame.pack(fill="both", expand=True)
         
@@ -379,11 +367,10 @@ class StockPredictionApp:
             X_test = test_df[FEATURE_COLS].values
             y_test = test_df["y_target"].values
             
-            # Models to compare
-            results = {} # {name: y_pred}
+            results = {} 
             metrics_list = []
             
-            # 1. Linear Regression
+            # Linear Regression
             self.log("Training Linear Regression...")
             lr = LinearRegression()
             lr.fit(X_train, y_train)
@@ -391,7 +378,7 @@ class StockPredictionApp:
             results["Linear Regression"] = pred_lr
             metrics_list.append(("Linear Regression", compute_regression_metrics(y_test, pred_lr)))
             
-            # 2. Random Forest
+            # Random Forest
             self.log("Training Random Forest...")
             rf = RandomForestRegressor()
             rf.fit(X_train, y_train)
@@ -399,7 +386,7 @@ class StockPredictionApp:
             results["Random Forest"] = pred_rf
             metrics_list.append(("Random Forest", compute_regression_metrics(y_test, pred_rf)))
             
-            # 3. Ridge
+            # Ridge
             self.log("Training Ridge Regression...")
             ridge = RidgeRegression()
             ridge.fit(X_train, y_train)
@@ -407,15 +394,15 @@ class StockPredictionApp:
             results["Ridge Regression"] = pred_ridge
             metrics_list.append(("Ridge Regression", compute_regression_metrics(y_test, pred_ridge)))
             
-            # 4. ARIMA
+            # ARIMA
             self.log("Training ARIMA...")
             train_ts = train_val_df["Adj Close"].values
             arima = ARIMA(train_ts, p=5, d=1, q=1, steps=len(test_df))
-            pred_arima = arima.flatten() # Returns predictions directly
+            pred_arima = arima.flatten() 
             results["ARIMA"] = pred_arima
             metrics_list.append(("ARIMA", compute_regression_metrics(y_test, pred_arima)))
             
-            # 5. Stacking Ensemble
+            # Stacking Ensemble
             self.log("Training Stacking Ensemble (Full Pipeline)...")
             stacking = StackingEnsemble(ridge_alpha=0.001)
             # Re-train proper pipeline for Stacking
@@ -437,17 +424,16 @@ class StockPredictionApp:
             self.root.after(0, lambda: self.btn_compare.config(state="normal"))
 
     def update_comparison_ui(self, metrics_list, results, original_dates, test_df, y_true):
-        # 1. Update Table
+        # Update Table
         for item in self.comp_tree.get_children():
             self.comp_tree.delete(item)
             
         for name, m_df in metrics_list:
             vals = m_df.iloc[0].tolist()
-            # Row: [Name, RMSE, MAE, DA, R2]
             row = [name] + [f"{v:.4f}" for v in vals]
             self.comp_tree.insert("", "end", values=row)
             
-        # 2. Update Chart
+        # Update Chart
         test_dates = original_dates[-len(test_df):]
         
         self.ax_comp.clear()
@@ -473,9 +459,7 @@ class StockPredictionApp:
         self.btn_compare.config(state="normal")
         messagebox.showinfo("Success", "Comparison Completed!")
 
-    # === LOGIC ===
     def load_data_thread(self):
-        # Disable button to prevent double click
         self.btn_load.config(state="disabled")
         threading.Thread(target=self.run_load_data, daemon=True).start()
 
@@ -487,10 +471,10 @@ class StockPredictionApp:
             
             self.log(f"Starting data download for {ticker} ({start} to {end})...")
             
-            # 1. Download Stock
+            # Download Stock
             download_stock_data(ticker, start, end)
             
-            # 2. Market Indices
+            # Market Indices
             indices = []
             if self.use_vix.get():
                 download_market_index("^VIX", "VIX", start, end)

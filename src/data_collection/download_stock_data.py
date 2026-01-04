@@ -7,21 +7,6 @@ def download_stock_data(
     end_date: str,
     output_dir: str = "data/raw/stocks"
 ):
-    """
-    Download historical stock price data from Yahoo Finance.
-
-    Parameters
-    ----------
-    ticker : str
-        Stock ticker symbol (e.g., 'AAPL', 'MSFT')
-    start_date : str
-        Start date (YYYY-MM-DD)
-    end_date : str
-        End date (YYYY-MM-DD)
-    output_dir : str
-        Directory to save CSV file
-    """
-
     os.makedirs(output_dir, exist_ok=True)
 
     df = yf.download(

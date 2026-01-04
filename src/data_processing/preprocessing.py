@@ -15,7 +15,7 @@ def preprocess_and_merge(
 
     os.makedirs(output_dir, exist_ok=True)
 
-    # === Load stock data ===
+    # Load stock data
     stock_path = f"{stock_dir}/{ticker}_historical_{start_date[:4]}_{end_date[:4]}.csv"
     stock_df = pd.read_csv(stock_path)
 
@@ -23,7 +23,7 @@ def preprocess_and_merge(
 
     data = stock_df.copy()
 
-    # === Load & merge macro indices ===
+    # Load & merge macro indices
     for index_name in index_names:
         index_file = f"{macro_dir}/{index_name}_{start_date[:4]}_{end_date[:4]}.csv"
 
@@ -35,10 +35,10 @@ def preprocess_and_merge(
 
         data = data.merge(index_df, on="Date", how="left")
 
-    # === Sort & handle missing values ===
+    # Sort & handle missing values
     data = data.sort_values("Date").reset_index(drop=True)
 
-    # Forward-fill macro indicators (financial standard)
+    #    Forward-fill macro indicators (financial standard)
     macro_cols = index_names
     data[macro_cols] = data[macro_cols].ffill()
 
